@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "npm run dev",
+    "start": "nodemon server/server.js",
     "dev": "./node_modules/.bin/webpack-dev-server --progress --profile --colors --hot --inline --no-info --content-base ./public",
     "build": "./node_modules/.bin/webpack --progress --profile --colors --watch",
     "lint": "./node_modules/.bin/eslint --ext .js --ext .jsx src tests",
