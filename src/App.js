@@ -10,7 +10,6 @@ import $ from 'jquery';
 import getloc from './utils/getloc';
 import getdate from './utils/getdate';
 
-
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -111,11 +110,29 @@ export class App extends Component {
     const options = {
       query: search,
       max: 1,
-      key: keys.google,
+      // key: keys.google,
     };
-    getYouTube(options, (data) => {
-      callback(data.items[0]);
+
+    $.ajax({
+      url: '/api/youtube',
+      type: 'GET',
+      data: options,
+      contentType: 'application/json',
+      success: (data) => {
+        this.setState({ fail: false });
+        console.log('call to youtube successful');
+        callback("youtube", data);
+      },
+      error: (data) => {
+        console.error('server youtube failed to GET');
+        console.log('problem is ', JSON.parse(data.responseText));
+        console.log(JSON.parse(data.responseText));
+      },
     });
+
+    // getYouTube(options, (data) => {
+    //   callback(data.items[0]);
+    // });
   }
 
   /*eslint-disable */

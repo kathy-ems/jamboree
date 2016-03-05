@@ -1,5 +1,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var Youtube = require("youtube-api");
+var request = require("request");
+var YouTube = require('youtube-node');
+
+
 var bodyParser = require('body-parser');
 var eventController = require('./events/eventController.js');
 var morgan = require('morgan');
@@ -19,6 +24,10 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/../public/'));
 app.use(passport.initialize());
 
+var youTube = new YouTube();
+youTube.setKey(keys.youtube);
+
+
 // configuration ===========================================
 
 // Passport Facebook strategy configuration=================
@@ -30,22 +39,22 @@ app.use(passport.initialize());
 // authentication.
 
 passport.use(new Strategy({
-    clientID: keys.facebook.clientID,
-    clientSecret: keys.facebook.clientSecret,
-    callbackURL: keys.facebook.callbackURL,
-    profileFields: ['id', 'displayName', 'picture.height(150).width(150)','friends']
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    //call a function which checks if user is in db
-    userController.createOrFindOne(profile, function(err, user){
-      if(err){
-        cb(err);
-      } else {
-        cb(null, user);
-      }
-    });
-    // return cb(null, profile);
-  }));
+  clientID: process.env.FACEBOOK_API_CLIENTID || keys.facebook.clientID,
+  clientSecret: process.env.FACEBOOK_API_CLIENTSECRET || keys.facebook.clientSecret,
+  callbackURL: process.env.FACEBOOK_API_CALLBACKURL || keys.facebook.callbackURL,
+  profileFields: ['id', 'displayName', 'picture.height(150).width(150)','friends']
+},
+function(accessToken, refreshToken, profile, cb) {
+  //call a function which checks if user is in db
+  userController.createOrFindOne(profile, function(err, user){
+    if(err){
+      cb(err);
+    } else {
+      cb(null, user);
+    }
+  });
+  // return cb(null, profile);
+}));
 
 // Configure Passport authenticated session persistence.
 //
@@ -71,7 +80,7 @@ app.get('/api/events/getList', eventController.getEvents);
 app.get('/login/facebook',
   passport.authenticate('facebook', {scope: ['user_friends']}));
 
-app.get('/login/facebook/return', 
+app.get('/login/facebook/return',
   passport.authenticate('facebook', { failureRedirect: '/' }),
   function(req, res) {
     //send cookie so client side has user info
@@ -82,7 +91,17 @@ app.get('/login/facebook/return',
 
   });
 
-
+app.get('/api/youtube', function (req, res, callback) {
+  youTube.search(req.query, 2, function(error, result) {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log("from youtube", JSON.stringify(result, null, 2));
+      callback(JSON.stringify(result, null, 2));
+    }
+  });
+});
 
 
 console.log( 'listening on', PORT );
