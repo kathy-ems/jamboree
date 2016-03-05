@@ -97,8 +97,7 @@ app.get('/api/youtube', function (req, res, callback) {
       console.log(error);
     }
     else {
-      console.log("from youtube", JSON.stringify(result, null, 2));
-      callback(JSON.stringify(result, null, 2));
+      res.send(JSON.stringify(result, null, 2));
     }
   });
 });

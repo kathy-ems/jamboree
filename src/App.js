@@ -101,6 +101,7 @@ export class App extends Component {
   }
 
   changeVideo(video) {
+    console.log("changevideo:", video);
     this.setState({
       video,
     });
@@ -110,7 +111,6 @@ export class App extends Component {
     const options = {
       query: search,
       max: 1,
-      // key: keys.google,
     };
 
     $.ajax({
@@ -121,7 +121,8 @@ export class App extends Component {
       success: (data) => {
         this.setState({ fail: false });
         console.log('call to youtube successful');
-        callback("youtube", data);
+        console.log("from serverjs youtube", data);
+        callback(data.items[0]);
       },
       error: (data) => {
         console.error('server youtube failed to GET');
@@ -129,10 +130,6 @@ export class App extends Component {
         console.log(JSON.parse(data.responseText));
       },
     });
-
-    // getYouTube(options, (data) => {
-    //   callback(data.items[0]);
-    // });
   }
 
   /*eslint-disable */
