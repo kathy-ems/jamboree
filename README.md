@@ -27,3 +27,10 @@ Static code and assets go in `./public`, and code goes `./src`.
 ## Tests
 
 [airbnb.io/enzyme](http://airbnb.io/enzyme) with Mocha, live in `./tests`
+
+## To start server:
+- `npm install`
+- tab 1: `mongod`
+- tab 2: `webpack --watch --progress --color`
+- tab 3: `nodemon server/server.js`
+- navigate to localhost:8080
